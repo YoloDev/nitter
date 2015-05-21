@@ -1,0 +1,31 @@
+{
+  "name": "nitter",
+  "version": "0.1.0",
+  "description": "Itterator functions",
+  "main": "lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/YoloDev/nitter.git"
+  },
+  "keywords": [
+    "ES6",
+    "Itterator"
+  ],
+  "author": "Alxandr",
+  "license": "Apache 2",
+  "bugs": {
+    "url": "https://github.com/YoloDev/nitter/issues"
+  },
+  "homepage": "https://github.com/YoloDev/nitter",
+  "devDependencies": {
+    "kake": "^0.4.1",
+    "kake-babel": "^0.3.0",
+    "kake-istanbul": "^0.1.4",
+    "kake-mocha": "^0.1.1",
+    "should": "^6.0.1",
+    "sinon": "^1.14.1"
+  }
+}

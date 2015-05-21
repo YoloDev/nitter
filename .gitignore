@@ -2,6 +2,10 @@
 logs
 *.log
 
+# Build files
+lib
+obj
+
 # Runtime data
 pids
 *.pid
