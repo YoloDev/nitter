@@ -4,3 +4,7 @@ test
 src
 obj
 node_modules
+.npmignore
+.gitattributes
+.gitignore
+.travis.yml
