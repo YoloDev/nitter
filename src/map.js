@@ -3,8 +3,7 @@ import { nitter, addMethods, subtype } from './nitter';
 const maptype = subtype({
   [Symbol.iterator]() {
     const iterator = this.inst.iter();
-    const fn = this.fn;
-    const thisArg = this.thisArg;
+    const { fn, thisArg } = this;
     return {
       next() {
         const next = iterator.next();
