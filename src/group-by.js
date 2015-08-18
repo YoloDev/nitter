@@ -1,7 +1,7 @@
 import { nitter, addMethods, subtype } from './nitter';
 
 function toGrouping(map) {
-  return nitter(map.entries());
+  return nitter(map.entries()).map(([key, value]) => [key, nitter(value)]);
 }
 
 const grouptype = subtype({
@@ -24,19 +24,21 @@ const grouptype = subtype({
     
     const arr = this.inst.arr();
     if (arr !== null) {
-      arr.forEach(fn, thisArg);
-      return toGrouping(map);
+      arr.forEach(fn);
+    } else {
+      const iterator = this.inst.iter();
+      
+      while (true) {
+        const next = iterator.next();
+        if (next.done) break;
+
+        fn.apply(null, [next.value]);
+      }
     }
 
-    const iterator = this.inst.iter();
-    while (true) {
-      const next = iterator.next();
-      if (next.done) break;
-
-      fn.apply(thisArg, [next.value]);
-    }
+    const grouping = toGrouping(map);
     
-    return toGrouping(map);
+    return grouping[Symbol.iterator]();
   }
 });
 
