@@ -1,6 +1,6 @@
 {
   "name": "nitter",
-  "version": "0.1.3",
+  "version": "0.1.4-0",
   "description": "Itterator functions",
   "main": "lib/index.js",
   "scripts": {
