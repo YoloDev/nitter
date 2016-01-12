@@ -23,18 +23,20 @@ describe('::map()', () => {
   });
 
   it('should be lazy', () => {
-    let ran = false, index = 1;
+    let ran = false, index = 0;
     const sut = nitter([1, 2, 3]);
     const mapped = sut.map(v => {
       ran = true;
+      index++;
       return v * 2;
     });
 
     ran.should.be.false;
+    index.should.equal(0);
 
     for (let value of mapped) {
       ran.should.be.true;
-      value.should.equal((index++) * 2);
+      value.should.equal(index * 2);
     }
   });
 });
