@@ -14,11 +14,21 @@ before_deploy:
 - ./predeploy.sh
 - json -f package.json version
 deploy:
-  provider: npm
-  email: alxandr@alxandr.me
-  skip_cleanup: true
-  api_key:
-    secure: Qyc2661RnnNlxDl7HDqSPbRjrPy6h7NpSAv9ObAW9XPsL3TbsCFBc7xatHL81Wwd372NYHarf1QI4wvN5etBxJIvVcvExVHqQ/Mbwu+1ERPtJhHTQ8cBx61XhAlxW4V8JIMkxsIPLtkacnN6lNyDup0uYeAE+Z7vRoUQOBixh1Uz7nvBgSxKdO7n5fJmsqCcOMG8M8hPJybphrhVDllFDLE0ZzXGX61CGyVyMGY6YqkM9K3IX7Q1KrszvO0LMW5zSoNA920vt/DXkVwGOsiI9aaLrVQ4hQqTemDtVdAln9A8BkZBl6Xq+OI91D/Klez4Qk9MMSfAlX8sI2yLpL6Yq6BNMyc7SngC5tu+sFc7pNwFTDmL/2Fxtae11Fv7wHtJNGujws6y3GzqOx6XX+h4YsduGrNG4eolEzLuDJ9fXNwSWWvAHL+m4gbKn9s/gc7cbeEnOtH/+OB5XUa7JX0ZXO2FRHzBhMATZVHjSShmqrQJUtzgFl+PEAB0YBdpN+KlA7y3dziV1vT+Y9XxpzhBzdWPC+D/YnLgO0tixnyXEftVMQyI8MXHMyl5UdJvhc8rP1x9+NR7J9JROaDqklGAZD9LLkfT3aXBGMbODfxRKAi66FNCOAiSfhP+dLiU0CUirIfqAuArTR5z2FDL621S5z1Aj+cxHrgfjI8bKj0W6EM=
-  on:
-    repo: YoloDev/nitter
-    node: node
+  - provider: npm
+    email: alxandr@alxandr.me
+    skip_cleanup: true
+    api_key:
+      secure: Qyc2661RnnNlxDl7HDqSPbRjrPy6h7NpSAv9ObAW9XPsL3TbsCFBc7xatHL81Wwd372NYHarf1QI4wvN5etBxJIvVcvExVHqQ/Mbwu+1ERPtJhHTQ8cBx61XhAlxW4V8JIMkxsIPLtkacnN6lNyDup0uYeAE+Z7vRoUQOBixh1Uz7nvBgSxKdO7n5fJmsqCcOMG8M8hPJybphrhVDllFDLE0ZzXGX61CGyVyMGY6YqkM9K3IX7Q1KrszvO0LMW5zSoNA920vt/DXkVwGOsiI9aaLrVQ4hQqTemDtVdAln9A8BkZBl6Xq+OI91D/Klez4Qk9MMSfAlX8sI2yLpL6Yq6BNMyc7SngC5tu+sFc7pNwFTDmL/2Fxtae11Fv7wHtJNGujws6y3GzqOx6XX+h4YsduGrNG4eolEzLuDJ9fXNwSWWvAHL+m4gbKn9s/gc7cbeEnOtH/+OB5XUa7JX0ZXO2FRHzBhMATZVHjSShmqrQJUtzgFl+PEAB0YBdpN+KlA7y3dziV1vT+Y9XxpzhBzdWPC+D/YnLgO0tixnyXEftVMQyI8MXHMyl5UdJvhc8rP1x9+NR7J9JROaDqklGAZD9LLkfT3aXBGMbODfxRKAi66FNCOAiSfhP+dLiU0CUirIfqAuArTR5z2FDL621S5z1Aj+cxHrgfjI8bKj0W6EM=
+    on:
+      repo: YoloDev/nitter
+      node: node
+
+  - provider: npm
+    email: alxandr@alxandr.me
+    skip_cleanup: true
+    api_key:
+      secure: Qyc2661RnnNlxDl7HDqSPbRjrPy6h7NpSAv9ObAW9XPsL3TbsCFBc7xatHL81Wwd372NYHarf1QI4wvN5etBxJIvVcvExVHqQ/Mbwu+1ERPtJhHTQ8cBx61XhAlxW4V8JIMkxsIPLtkacnN6lNyDup0uYeAE+Z7vRoUQOBixh1Uz7nvBgSxKdO7n5fJmsqCcOMG8M8hPJybphrhVDllFDLE0ZzXGX61CGyVyMGY6YqkM9K3IX7Q1KrszvO0LMW5zSoNA920vt/DXkVwGOsiI9aaLrVQ4hQqTemDtVdAln9A8BkZBl6Xq+OI91D/Klez4Qk9MMSfAlX8sI2yLpL6Yq6BNMyc7SngC5tu+sFc7pNwFTDmL/2Fxtae11Fv7wHtJNGujws6y3GzqOx6XX+h4YsduGrNG4eolEzLuDJ9fXNwSWWvAHL+m4gbKn9s/gc7cbeEnOtH/+OB5XUa7JX0ZXO2FRHzBhMATZVHjSShmqrQJUtzgFl+PEAB0YBdpN+KlA7y3dziV1vT+Y9XxpzhBzdWPC+D/YnLgO0tixnyXEftVMQyI8MXHMyl5UdJvhc8rP1x9+NR7J9JROaDqklGAZD9LLkfT3aXBGMbODfxRKAi66FNCOAiSfhP+dLiU0CUirIfqAuArTR5z2FDL621S5z1Aj+cxHrgfjI8bKj0W6EM=
+    on:
+      repo: YoloDev/nitter
+      node: node
+      tags: true
