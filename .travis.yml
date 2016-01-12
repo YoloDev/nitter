@@ -8,8 +8,9 @@ install:
 script:
 - npm run coverage
 after_success:
-- node node_modules/coveralls/bin/coveralls < obj/coverage/lcov.info
+- node node_modules/coveralls/bin/coveralls < coverage/lcov.info
 before_deploy:
+- chmod +x ./predeploy.sh
 - ./predeploy.sh
 - json -f package.json version
 deploy:
