@@ -6,6 +6,7 @@ import './for-each';
 import './order-by';
 import './group-by';
 import './reduce';
+import './filter';
 
 export default nitter;
 export { nitter, addMethods, subtype };
