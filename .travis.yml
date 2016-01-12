@@ -1,7 +1,7 @@
 language: node_js
 node_js:
 - node
-- "v4.2.4" # LTS
+- v4.2.4   # LTS
 install:
 - npm install
 - npm install coveralls
@@ -10,15 +10,13 @@ script:
 after_success:
 - node node_modules/coveralls/bin/coveralls < obj/coverage/lcov.info
 before_deploy:
-- npm run build
-- cp package.json package.json.orig
-- json -If package.json -e 'this.version += "-build.$TRAVIS_BUILD_NUMBER"'
+- ./predeploy.sh
 - json -f package.json version
 deploy:
   provider: npm
   email: alxandr@alxandr.me
   api_key:
-    secure: CUy6SKOjdwr2G7IzR/zNkKx1lvp3qvYwHA4qHH7fi0elFsv4Eo9pPu075HJcVDezubwiMlg61+G/BCejfQsm91/LkEizRCmwP9qHfkx2QhcIK6MxxBftkzyI+z10coe1GKwQVZOIFrd2Ao7/+kDdp+QDfq1rJBCg6Ag1pn6WUmtFm6YEFFGywii/A8vC9ZfOU4bAii5AFIs39j3GK+KLdu3tgmcJacGX2I2JPhvHhlnrnUOMkaStvc1FYwX8QfY9clYI5TmWmW4NFOtUVYySn7WmFMh0Wzz2VOr1hgooc2jrVwUpT+PMXBkJV5Tlar3HzSUkkrX2E2lhnh/qELMoQK8E0hTxidlMn3Pe7IaRwFRaHTdfrYrX7YHgWh+TgZV6ladcfQyQGYKtYagmOk0e/q/N06rKhhgSvvPynITuYzR8OevwTpveduq7x342lC2CAr+nfj6GJsmIfrzVU60M4FA9JDDBavG3darmU93OQFfs+3ssXuXIvB7aNApZmctM2udIr43huZWmF9/OusPJBDsfCG+YxdgUDE3JXrGrQh/LpOxXIPiqb7HE10jwEWBkbzFXNTZpFYGHPTcJlOEDYBGKlmVlRp+V/U/hW7Qm8DcGdRp1nn99r8j9dqr2WIIO7PPudwQwmM2gggSyVtVN/uLVDcG/o/dpSRk47IEveTQ=
+    secure: Qyc2661RnnNlxDl7HDqSPbRjrPy6h7NpSAv9ObAW9XPsL3TbsCFBc7xatHL81Wwd372NYHarf1QI4wvN5etBxJIvVcvExVHqQ/Mbwu+1ERPtJhHTQ8cBx61XhAlxW4V8JIMkxsIPLtkacnN6lNyDup0uYeAE+Z7vRoUQOBixh1Uz7nvBgSxKdO7n5fJmsqCcOMG8M8hPJybphrhVDllFDLE0ZzXGX61CGyVyMGY6YqkM9K3IX7Q1KrszvO0LMW5zSoNA920vt/DXkVwGOsiI9aaLrVQ4hQqTemDtVdAln9A8BkZBl6Xq+OI91D/Klez4Qk9MMSfAlX8sI2yLpL6Yq6BNMyc7SngC5tu+sFc7pNwFTDmL/2Fxtae11Fv7wHtJNGujws6y3GzqOx6XX+h4YsduGrNG4eolEzLuDJ9fXNwSWWvAHL+m4gbKn9s/gc7cbeEnOtH/+OB5XUa7JX0ZXO2FRHzBhMATZVHjSShmqrQJUtzgFl+PEAB0YBdpN+KlA7y3dziV1vT+Y9XxpzhBzdWPC+D/YnLgO0tixnyXEftVMQyI8MXHMyl5UdJvhc8rP1x9+NR7J9JROaDqklGAZD9LLkfT3aXBGMbODfxRKAi66FNCOAiSfhP+dLiU0CUirIfqAuArTR5z2FDL621S5z1Aj+cxHrgfjI8bKj0W6EM=
   on:
     repo: YoloDev/nitter
     node: node
