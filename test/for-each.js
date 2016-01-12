@@ -1,6 +1,6 @@
 import should from 'should';
 import { spy } from 'sinon';
-import { nitter, addMethods } from '../lib/index';
+import { nitter, addMethods } from '../src/index';
 import { iterator } from './utils';
 
 describe('::forEach()', () => {
@@ -17,10 +17,10 @@ describe('::forEach()', () => {
     fn.getCall(0).args[0].should.equal(1);
     fn.getCall(1).args[0].should.equal(2);
     fn.getCall(2).args[0].should.equal(3);
-    
+
     const fn2 = spy();
     nitter([1]).forEach(fn2, fn);
-    
+
     fn2.callCount.should.equal(1);
     fn2.getCall(0).args[0].should.equal(1);
     fn2.getCall(0).thisValue.should.equal(fn);
@@ -34,10 +34,10 @@ describe('::forEach()', () => {
     fn.getCall(0).args[0].should.equal(1);
     fn.getCall(1).args[0].should.equal(2);
     fn.getCall(2).args[0].should.equal(3);
-    
+
     const fn2 = spy();
     nitter(iterator([1])).forEach(fn2, fn);
-    
+
     fn2.callCount.should.equal(1);
     fn2.getCall(0).args[0].should.equal(1);
     fn2.getCall(0).thisValue.should.equal(fn);

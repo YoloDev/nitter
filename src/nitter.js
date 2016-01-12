@@ -18,7 +18,7 @@ const wrapper = Object.create({}, {
 		  return this._[Symbol.iterator]();
 	  }
   },
-  
+
   arr: {
     configurable: false,
     enumerable: false,
@@ -34,11 +34,11 @@ export function nitter(iterable) {
   if (iterable === null || iterable === undefined) {
     throw new Error('Argument cannot be null or undefined.');
   }
-  
+
   if (!iterable[Symbol.iterator]) {
     throw new Error('Argument must be an iterable.');
   }
-  
+
   if (iterable[symb]) {
     return iterable;
   }
@@ -51,7 +51,7 @@ export function nitter(iterable) {
       value: iterable
     }
   });
-  
+
   const ret = Object.create(proto, {
     [symb]: {
       configurable: false,
@@ -70,18 +70,23 @@ export function nitter(iterable) {
 
   return ret;
 }
+nitter.isNitter = isNitter;
+
+export function isNitter(obj) {
+  return obj.hasOwnProperty && obj.hasOwnProperty(symb);
+}
 
 export function addMethods(methods) {
   Object.keys(methods).forEach(m => {
     const val = methods[m];
     if (proto[m] && proto[m].fn) {
       if (proto[m].fn !== val) {
-        throw new Error(`nitter already has a method by the name of ${m} implemented.`);        
+        throw new Error(`nitter already has a method by the name of ${m} implemented.`);
       } else {
         return;
       }
     }
-    
+
     Object.defineProperty(proto, m, {
       configurable: false,
       enumerable: false,
@@ -117,7 +122,7 @@ function getDescriptors(proto, map = v => v) {
       value: map(proto[k])
     };
   });
-  
+
   return ret;
 }
 
@@ -129,7 +134,7 @@ export function subtype(proto = null, statics = null, extend = null) {
   const symbol = Symbol();
   proto = armortize(proto || {});
   statics = armortize(statics || {});
-  
+
   return Object.create(statics, {
     is: {
       configurable: false,
@@ -139,7 +144,7 @@ export function subtype(proto = null, statics = null, extend = null) {
         return !!inst[symbol];
       }
     },
-    
+
     create: {
       configurable: false,
       enumerable: false,
@@ -149,7 +154,7 @@ export function subtype(proto = null, statics = null, extend = null) {
         if (extend) {
           ret = Object.create(ret, getDescriptors(extend, createProtoFn));
         }
-        
+
         return ret;
       }
     }

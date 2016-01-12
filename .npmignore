@@ -1,10 +1,11 @@
-Kakefile.js
 Makefile
 test
-src
 obj
 node_modules
+coverage
+.istanbul.yml
 .npmignore
 .gitattributes
 .gitignore
 .travis.yml
+nodemon.json

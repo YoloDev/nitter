@@ -1,0 +1,31 @@
+instrumentation:
+#    extensions:
+#        - .es
+    excludes: ["build/test/*.js"]
+reporting:
+    dir: ./coverage
+    reports:
+        - lcov
+        - html
+    print: summary
+    watermarks:
+        statements: [80, 100]
+        lines: [80, 100]
+        functions: [80, 100]
+        branches: [80, 100]
+    report-config:
+        clover: {file: clover.xml}
+        cobertura: {file: cobertura-coverage.xml}
+        json: {file: coverage-final.json}
+        json-summary: {file: coverage-summary.json}
+        lcovonly: {file: lcov.info}
+        teamcity: {file: null}
+        text: {file: null, maxCols: 0}
+        text-lcov: {file: lcov.info}
+        text-summary: {file: null}
+check:
+    global:
+        branches: 100
+        functions: 100
+        lines: 100
+        statements: 100

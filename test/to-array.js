@@ -1,5 +1,5 @@
 import should from 'should';
-import { nitter, addMethods } from '../lib/index';
+import { nitter, addMethods } from '../src/index';
 import { iterator } from './utils';
 
 describe('::toArray()', () => {
@@ -13,7 +13,7 @@ describe('::toArray()', () => {
     const sut = nitter(arr);
     sut.toArray(false).should.equal(arr);
   });
-  
+
   it('should return a new array when not setting `clone`', () => {
     const arr = [1, 2, 3];
     const sut = nitter(arr);

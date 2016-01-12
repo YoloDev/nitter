@@ -1,5 +1,5 @@
 import should from 'should';
-import { addMethods } from '../lib/index';
+import { addMethods, nitter } from '../src/index';
 
 addMethods({
   __runInnerTest(fn) {
@@ -18,4 +18,9 @@ export function ensureIterable(iterable) {
   const fn = iterable[Symbol.iterator];
   should.exist(fn);
   fn.should.be.a.Function;
+}
+
+export function ensureNitter(obj) {
+  const isNitter = nitter.isNitter(obj);
+  isNitter.should.be.true;
 }

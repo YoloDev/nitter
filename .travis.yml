@@ -1,20 +1,23 @@
 language: node_js
 node_js:
 - node
-- iojs
+- "v4.2.4" # LTS
 install:
 - npm install
 - npm install coveralls
 script:
-- node node_modules/kake/bin/kake
+- npm run coverage
 after_success:
 - node node_modules/coveralls/bin/coveralls < obj/coverage/lcov.info
+before_deploy:
+- npm run build
+- cp package.json package.json.orig
+- json -If package.json -e 'this.version += "-build.$TRAVIS_BUILD_NUMBER"'
 deploy:
   provider: npm
   email: alxandr@alxandr.me
   api_key:
     secure: CUy6SKOjdwr2G7IzR/zNkKx1lvp3qvYwHA4qHH7fi0elFsv4Eo9pPu075HJcVDezubwiMlg61+G/BCejfQsm91/LkEizRCmwP9qHfkx2QhcIK6MxxBftkzyI+z10coe1GKwQVZOIFrd2Ao7/+kDdp+QDfq1rJBCg6Ag1pn6WUmtFm6YEFFGywii/A8vC9ZfOU4bAii5AFIs39j3GK+KLdu3tgmcJacGX2I2JPhvHhlnrnUOMkaStvc1FYwX8QfY9clYI5TmWmW4NFOtUVYySn7WmFMh0Wzz2VOr1hgooc2jrVwUpT+PMXBkJV5Tlar3HzSUkkrX2E2lhnh/qELMoQK8E0hTxidlMn3Pe7IaRwFRaHTdfrYrX7YHgWh+TgZV6ladcfQyQGYKtYagmOk0e/q/N06rKhhgSvvPynITuYzR8OevwTpveduq7x342lC2CAr+nfj6GJsmIfrzVU60M4FA9JDDBavG3darmU93OQFfs+3ssXuXIvB7aNApZmctM2udIr43huZWmF9/OusPJBDsfCG+YxdgUDE3JXrGrQh/LpOxXIPiqb7HE10jwEWBkbzFXNTZpFYGHPTcJlOEDYBGKlmVlRp+V/U/hW7Qm8DcGdRp1nn99r8j9dqr2WIIO7PPudwQwmM2gggSyVtVN/uLVDcG/o/dpSRk47IEveTQ=
   on:
-    tags: true
     repo: YoloDev/nitter
     node: node
