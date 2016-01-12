@@ -7,6 +7,8 @@ import './order-by';
 import './group-by';
 import './reduce';
 import './filter';
+import './skip';
+import './take';
 
 export default nitter;
 export { nitter, addMethods, subtype };
