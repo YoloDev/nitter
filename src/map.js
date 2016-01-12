@@ -3,15 +3,15 @@ import { nitter, addMethods, subtype } from './nitter';
 const maptype = subtype({
   [Symbol.iterator]() {
     const iterator = this.inst.iter();
-    const { fn, thisArg } = this;
+    const { fn } = this;
     return {
       next() {
         const next = iterator.next();
         if (next.done) {
           return { done: true };
         }
-        
-        const value = fn.call(thisArg || null, next.value);
+
+        const value = fn(next.value);
         return {
           done: false,
           value: value
@@ -22,11 +22,10 @@ const maptype = subtype({
 });
 
 addMethods({
-  map(fn, thisArg) {
+  map(fn) {
     return maptype.create({
       inst: this,
-      fn: fn,
-      thisArg: thisArg
+      fn: fn
     });
   }
 });
