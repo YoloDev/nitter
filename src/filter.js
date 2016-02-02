@@ -1,36 +1,29 @@
-import { nitter, addMethods, subtype } from './nitter';
+import { makeNitterFn, subtype } from './nitter';
 
-const filtertype = subtype({
-  [Symbol.iterator]() {
-    const iterator = this.inst.iter();
-    const { fn } = this;
-    return {
-      next() {
-        while (true) {
-          const next = iterator.next();
-          if (next.done) {
-            return { done: true };
-          }
+const filterType = subtype('Nitter:Filter', (n, fn) => {
+  const iterator = n.iter();
 
-          const include = fn(next.value);
+  return {
+    next() {
+      let tmp;
+      do {
+        tmp = iterator.next();
+      } while (!tmp.done && !fn(tmp.value));
 
-          if (include) {
-            return {
-              done: false,
-              value: next.value
-            };
-          }
-        }
+      const { done, value } = tmp;
+      if (done) {
+        return { done };
       }
-    };
-  }
+
+      return { done, value };
+    }
+  };
 });
 
-addMethods({
-  filter(fn) {
-    return filtertype.create({
-      inst: this,
-      fn: fn
-    });
+export const filter = makeNitterFn(function filter(n, fn) { // eslint-disable-line prefer-arrow-callback
+  if (typeof fn !== 'function') {
+    throw new Error(`Expected fn to be a function, got ${fn}.`);
   }
+
+  return filterType(n, fn);
 });

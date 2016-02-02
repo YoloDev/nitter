@@ -1,19 +1,19 @@
-import { nitter, addMethods } from './nitter';
+import { makeNitterFn } from './nitter';
 
-addMethods({
-  forEach(fn, thisArg = null) {
-    const arr = this.arr();
-    if (arr !== null) {
-      arr.forEach(fn, thisArg);
-      return;
+export const forEach = makeNitterFn(function forEach(n, fn) { //eslint-disable-line prefer-arrow-callback
+  const arr = n.arr();
+  if (arr !== null) {
+    arr.forEach(fn);
+    return;
+  }
+
+  const iterator = n.iter();
+  while (true) { // eslint-disable-line no-constant-condition
+    const next = iterator.next();
+    if (next.done) {
+      break;
     }
 
-    const iterator = this.iter();
-    while (true) {
-      const next = iterator.next();
-      if (next.done) break;
-
-      fn.apply(thisArg, [next.value]);
-    }
+    fn(next.value);
   }
 });

@@ -1,181 +1,62 @@
-export const symb = Symbol('nitter');
-const proto = Object.create({}, {
-  [Symbol.iterator]: {
-    configurable: true,
-    enumerable: false,
-    writable: false,
-    value: function getIterator() {
-      return this[symb].iter();
-    }
-  }
-});
-const wrapper = Object.create({}, {
-  iter: {
-    configurable: false,
-	  enumerable: false,
-    writable: false,
-	  value: function iter() {
-		  return this._[Symbol.iterator]();
-	  }
-  },
+import { setName, define, prop } from './utils';
 
-  arr: {
-    configurable: false,
-    enumerable: false,
-    writable: false,
-    value: function arr() {
-      const _ = this._;
-      return Array.isArray(_) ? _ : null;
-    }
-  }
-});
-
-export function nitter(iterable) {
-  if (iterable === null || iterable === undefined) {
-    throw new Error('Argument cannot be null or undefined.');
+export function makeNitterFn(fn, type = null) {
+  if (typeof fn !== 'function') {
+    throw new Error(`Expected fn to be a function, but got ${fn} instead.`);
   }
 
-  if (!iterable[Symbol.iterator]) {
-    throw new Error('Argument must be an iterable.');
+  if (!fn.name) {
+    throw new Error(`makeNitterFn must be called on a named function.`);
   }
 
-  if (iterable[symb]) {
-    return iterable;
-  }
-
-  const wrapped = Object.create(wrapper, {
-    _: {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: iterable
-    }
-  });
-
-  const ret = Object.create(proto, {
-    [symb]: {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: wrapped
-    }
-  });
-
-  Object.defineProperty(wrapped, 'nitter', {
-    configurable: false,
-    enumerable: false,
-    writable: false,
-    value: ret
-  });
-
+  setName(ret, fn.name);
+  define(ret, 'fn', fn);
   return ret;
-}
-nitter.isNitter = isNitter;
 
-export function isNitter(obj) {
-  while (obj !== null && typeof obj !== 'undefined') {
-    const objProto = Object.getPrototypeOf(obj);
-    if (objProto === proto) {
-      return true;
+  function ret(...args) {
+    if (!isIterable(this)) { // eslint-disable-line no-invalid-this
+      return n => ret.apply(n, args);
     }
 
-    obj = objProto;
-  }
-
-  return false;
-}
-
-export function addMethods(methods) {
-  Object.keys(methods).forEach(m => {
-    const val = methods[m];
-    if (proto[m] && proto[m].fn) {
-      if (proto[m].fn !== val) {
-        throw new Error(`nitter already has a method by the name of ${m} implemented.`);
-      } else {
-        return;
+    if (type !== null) {
+      if (!type.is(this)) { // eslint-disable-line no-invalid-this
+        throw new Error(`Function ::${fn.name} can only run on objects of type ${type.name}.`);
       }
     }
 
-    Object.defineProperty(proto, m, {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: createProtoFn(val)
+    return fn(wrap(this), ...args); // eslint-disable-line no-invalid-this
+  }
+}
+
+export function subtype(name, iterate) {
+  const symb = Symbol(`${name}-data`);
+  setName(Type, name);
+  define(Type.prototype, 'constructor', Type);
+  define(Type.prototype, Symbol.iterator, function iterator() { // eslint-disable-line prefer-arrow-callback
+    return iterate(...this[symb]); // eslint-disable-line no-invalid-this
+  });
+  define(Type, 'is', function is(inst) { // eslint-disable-line prefer-arrow-callback
+    return inst instanceof Type;
+  });
+  define(Type, 'data', function data(inst) { // eslint-disable-line prefer-arrow-callback
+    return inst[symb];
+  });
+
+  return Type;
+
+  function Type(...args) {
+    return Object.create(Type.prototype, {
+      [symb]: prop(Object.freeze(args))
     });
-  });
+  }
 }
 
-function createProtoFn(fn) {
-  const ret = function(...args) {
-    return fn.apply(this[symb], args);
-  };
-  ret.fn = fn;
-  return ret;
-}
-
-function getDescriptors(proto, map = v => v) {
-  const ret = {};
-  Object.getOwnPropertyNames(proto).forEach(k => {
-    ret[k] = {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: map(proto[k])
-    };
-  });
-  Object.getOwnPropertySymbols(proto).forEach(k => {
-    ret[k] = {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: map(proto[k])
-    };
-  });
-
-  return ret;
-}
-
-function armortize(proto) {
-  return Object.create({}, getDescriptors(proto));
-}
-
-export function subtype(proto = null, statics = null, extend = null) {
-  const symbol = Symbol();
-  proto = armortize(proto || {});
-  statics = armortize(statics || {});
-
-  return Object.create(statics, {
-    is: {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: function is(inst) {
-        return !!inst[symbol];
-      }
-    },
-
-    create: {
-      configurable: false,
-      enumerable: false,
-      writable: false,
-      value: function create(props = {}) {
-        let ret = nitter(Object.create(proto, getDescriptors(props)));
-        if (extend) {
-          ret = Object.create(ret, getDescriptors(extend, createProtoFn));
-        }
-
-        return ret;
-      }
-    }
-  });
-}
-
-export function lazy(func) {
+export function lazy(thunk) {
   let val, created = false;
 
   return () => {
     if (!created) {
-      val = func();
+      val = thunk();
       created = true;
     }
 
@@ -183,15 +64,28 @@ export function lazy(func) {
   };
 }
 
-export function cell() {
-  let val, created = false;
+function isIterable(it) {
+  return Boolean(it && it[Symbol.iterator]);
+}
 
-  return (func) => {
-    if (!created) {
-      val = func();
-      created = true;
-    }
+const wrapper = Object.create({}, {
+  arr: prop(function arr() {
+    const { _ } = this; // eslint-disable-line no-invalid-this
+    return Array.isArray(_) ? _ : null;
+  }),
 
-    return val;
-  };
+  iter: prop(function itter() {
+    return this[Symbol.iterator](); // eslint-disable-line no-invalid-this
+  }),
+
+  [Symbol.iterator]: prop(function iterator() {
+    const { _ } = this; // eslint-disable-line no-invalid-this
+    return _[Symbol.iterator]();
+  })
+});
+
+function wrap(iterable) {
+  return Object.create(wrapper, {
+    _: prop(iterable)
+  });
 }
