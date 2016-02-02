@@ -1,4 +1,5 @@
 import { nitter, addMethods } from './nitter';
+import { empty } from './list';
 
 addMethods({
   reduce(fn, state) {
@@ -21,5 +22,9 @@ addMethods({
   // Special cases
   sum() {
     return this.nitter.reduce((a, b) => a + b, 0);
+  },
+
+  reverse() {
+    return this.nitter.reduce((acc, val) => acc.cons(val), empty);
   }
 });

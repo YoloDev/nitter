@@ -12,3 +12,4 @@ import './take';
 
 export default nitter;
 export { nitter, addMethods, subtype };
+export { empty as list } from './list';

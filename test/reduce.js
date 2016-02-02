@@ -24,4 +24,11 @@ describe('::reduce()', () => {
       sut.sum().should.equal(6);
     });
   });
+
+  describe('::reverse()', () => {
+    it('should reverse an iterable', () => {
+      const sut = nitter(iterator([1, 2, 3]));
+      sut.reverse().toArray().should.eql([3, 2, 1]);
+    });
+  });
 });

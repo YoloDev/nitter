@@ -1,7 +1,7 @@
-const symb = Symbol('nitter');
+export const symb = Symbol('nitter');
 const proto = Object.create({}, {
   [Symbol.iterator]: {
-    configurable: false,
+    configurable: true,
     enumerable: false,
     writable: false,
     value: function getIterator() {
@@ -73,7 +73,16 @@ export function nitter(iterable) {
 nitter.isNitter = isNitter;
 
 export function isNitter(obj) {
-  return obj.hasOwnProperty && obj.hasOwnProperty(symb);
+  while (obj !== null && typeof obj !== 'undefined') {
+    const objProto = Object.getPrototypeOf(obj);
+    if (objProto === proto) {
+      return true;
+    }
+
+    obj = objProto;
+  }
+
+  return false;
 }
 
 export function addMethods(methods) {
@@ -149,7 +158,7 @@ export function subtype(proto = null, statics = null, extend = null) {
       configurable: false,
       enumerable: false,
       writable: false,
-      value: function create(props) {
+      value: function create(props = {}) {
         let ret = nitter(Object.create(proto, getDescriptors(props)));
         if (extend) {
           ret = Object.create(ret, getDescriptors(extend, createProtoFn));
@@ -159,4 +168,30 @@ export function subtype(proto = null, statics = null, extend = null) {
       }
     }
   });
+}
+
+export function lazy(func) {
+  let val, created = false;
+
+  return () => {
+    if (!created) {
+      val = func();
+      created = true;
+    }
+
+    return val;
+  };
+}
+
+export function cell() {
+  let val, created = false;
+
+  return (func) => {
+    if (!created) {
+      val = func();
+      created = true;
+    }
+
+    return val;
+  };
 }

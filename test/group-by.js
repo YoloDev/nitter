@@ -1,5 +1,5 @@
-import should from 'should';
-import { nitter, addMethods } from '../src/index';
+import 'should';
+import { nitter } from '../src/index';
 import { iterator, ensureIterable, ensureNitter } from './utils';
 
 describe('::groupBy()', () => {
@@ -97,5 +97,29 @@ describe('::groupBy()', () => {
       key.should.equal(arr[0].key);
       key.should.equal(arr[1].key);
     });
+  });
+
+  it('should not recompute the groups', () => {
+    const sut = nitter(iterator([
+      { key: 0 },
+      { key: 2 },
+      { key: 2 },
+      { key: 0 },
+      { key: 1 },
+      { key: 1 }
+    ]));
+
+    let count = 0;
+    const grouped = sut.groupBy(v => {
+      count++;
+      return v.key;
+    });
+
+    count.should.equal(0);
+    grouped.toArray(); // generate the groups
+
+    count.should.equal(6);
+    grouped.toArray();
+    count.should.equal(6);
   });
 });
