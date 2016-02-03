@@ -1,5 +1,5 @@
 import should from 'should';
-import { reduce, sum } from '../src/index';
+import { reduce, sum, reverse, toArray } from '../src/index';
 import { iterator } from './utils';
 
 describe('::reduce()', () => {
@@ -28,10 +28,10 @@ describe('::reduce()', () => {
     });
   });
 
-  // describe('::reverse()', () => {
-  //   it('should reverse an iterable', () => {
-  //     const sut = nitter(iterator([1, 2, 3]));
-  //     sut.reverse().toArray().should.eql([3, 2, 1]);
-  //   });
-  // });
+  describe('::reverse()', () => {
+    it('should reverse an iterable', () => {
+      const sut = iterator([1, 2, 3]);
+      sut::reverse()::toArray().should.eql([3, 2, 1]);
+    });
+  });
 });

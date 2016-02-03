@@ -1,4 +1,5 @@
 import { makeNitterFn } from './nitter';
+import { empty, cons } from './list';
 
 export const reduce = makeNitterFn(function reduce(n, fn, state) { //eslint-disable-line prefer-arrow-callback
   const arr = n.arr();
@@ -24,6 +25,6 @@ export const sum = makeNitterFn(function sum(n) { //eslint-disable-line prefer-a
   return reduce.fn(n, (a, b) => a + b, 0);
 });
 
-// export const reverse = makeNitterFn(function reverse(n) { //eslint-disable-line prefer-arrow-callback
-//   return reduce.fn((acc, val) => cons(val, acc), empty);
-// });
+export const reverse = makeNitterFn(function reverse(n) { //eslint-disable-line prefer-arrow-callback
+  return reduce.fn(n, (acc, val) => cons(val, acc), empty);
+});

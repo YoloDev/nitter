@@ -1,3 +1,12 @@
+export function frozenNew(base, props = null) {
+  if (props === null) {
+    props = base;
+    base = {};
+  }
+
+  return Object.freeze(Object.create(base, props));
+}
+
 export const setName = (() => {
   const { configurable } = Object.getOwnPropertyDescriptor(func, 'name');
 
