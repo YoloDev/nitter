@@ -1,31 +1,24 @@
-import { nitter, addMethods, subtype } from './nitter';
+import { makeNitterFn, subtype } from './nitter';
 
-const maptype = subtype({
-  [Symbol.iterator]() {
-    const iterator = this.inst.iter();
-    const { fn } = this;
-    return {
-      next() {
-        const next = iterator.next();
-        if (next.done) {
-          return { done: true };
-        }
+const mapType = subtype('Nitter:Map', (n, fn) => {
+  const iterator = n.iter();
 
-        const value = fn(next.value);
-        return {
-          done: false,
-          value: value
-        };
+  return {
+    next() {
+      const { done, value } = iterator.next();
+      if (done) {
+        return { done };
       }
-    };
-  }
+
+      return { done, value: fn(value) };
+    }
+  };
 });
 
-addMethods({
-  map(fn) {
-    return maptype.create({
-      inst: this,
-      fn: fn
-    });
+export const map = makeNitterFn(function map(n, fn) { // eslint-disable-line prefer-arrow-callback
+  if (typeof fn !== 'function') {
+    throw new Error(`Expected fn to be a function, got ${fn}.`);
   }
+
+  return mapType(n, fn);
 });

@@ -1,6 +1,6 @@
 {
   "name": "nitter",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "Itterator functions",
   "main": "lib/index.js",
   "scripts": {
@@ -26,6 +26,7 @@
     "babel-cli": "^6.4.0",
     "babel-eslint": "^4.1.6",
     "babel-istanbul": "^0.6.0",
+    "babel-plugin-transform-function-bind": "^6.3.13",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-stage-1": "^6.3.13",
     "babel-register": "^6.3.13",

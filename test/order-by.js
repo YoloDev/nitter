@@ -1,328 +1,391 @@
 import should from 'should';
-import { nitter } from '../src/index';
-import { iterator, ensureIterable } from './utils';
+import { spy } from 'sinon';
+import { orderBy, orderByDescending, thenBy, thenByDescending, count, toArray, setLogSink } from '../src/index';
+import { ensureIterable } from './utils';
 
 describe('::orderBy()', () => {
   it('should be a function', () => {
-    const sut = nitter([]);
-    sut.should.have.property('orderBy').which.is.a.Function;
+    should(orderBy).be.a.Function.with.property('name').which.equal('orderBy');
   });
 
   it('should return an iterable', () => {
-    const sut = nitter([]);
-    const result = sut.orderBy();
+    const sut = [];
+    const result = sut::orderBy();
 
     ensureIterable(result);
   });
 
   it('should return a seqence with the same length as the original', () => {
-    const sut = nitter([1, 2, 3]);
-    const result = sut.orderBy();
+    const sut = [1, 2, 3];
+    const result = sut::orderBy();
 
-    result.count().should.equal(sut.count());
+    result::count().should.equal(sut::count());
   });
 
   it('should return a ordered sequence', () => {
-    const sut = nitter([2, 3, 1, 1]);
-    const ordered = sut.orderBy();
-    const result = ordered.toArray();
+    const sut = [2, 3, 1, 1];
+    const ordered = sut::orderBy();
+    const result = ordered::toArray();
 
     result.should.eql([1, 1, 2, 3]);
 
     // Test again simply to ensure that the caching of sort functions
     // doesn't break stuff.
-    ordered.toArray().should.eql([1, 1, 2, 3]);
+    ordered::toArray().should.eql([1, 1, 2, 3]);
+  });
+
+  it('should warn if you try to re-order a collection', () => {
+    const log = spy();
+    setLogSink(log);
+
+    try {
+      const sut = [2, 3, 1, 1]::orderBy();
+      log.callCount.should.equal(0);
+      sut::orderBy();
+      log.callCount.should.equal(1);
+      log.firstCall.args[0].should.equal('warn');
+      log.firstCall.args[1][0].should.equal('::orderBy ran on an already ordered iterator.');
+    } finally {
+      setLogSink(null);
+    }
   });
 
   it('should sort on named properties', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2}
-    ]);
-    const result = sut.orderBy('id').toArray();
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 }
+    ];
+    const result = sut::orderBy('id')::toArray();
 
     result.should.eql([
-      {id: 1},
-      {id: 2},
-      {id: 3}
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
     ]);
   });
 
   it('should sort on function getters', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2}
-    ]);
-    const result = sut.orderBy(item => item.id).toArray();
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 }
+    ];
+    const result = sut::orderBy(item => item.id)::toArray();
 
     result.should.eql([
-      {id: 1},
-      {id: 2},
-      {id: 3}
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
     ]);
   });
 
   it('should accept custom matchers', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2},
-      {id: 1}
-    ]);
-    const result = sut.orderBy(item => item.id, (a, b) => {
-      if (a < b) return 1;
-      if (b < a) return -1;
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 },
+      { id: 1 }
+    ];
+    const result = sut::orderBy(item => item.id, (a, b) => {
+      if (a < b) {
+        return 1;
+      }
+
+      if (b < a) {
+        return -1;
+      }
+
       return 0;
-    }).toArray();
+    })::toArray();
 
     result.should.eql([
-      {id: 3},
-      {id: 2},
-      {id: 1},
-      {id: 1}
+      { id: 3 },
+      { id: 2 },
+      { id: 1 },
+      { id: 1 }
     ]);
   });
 });
 
 describe('::orderByDescending()', () => {
   it('should be a function', () => {
-    const sut = nitter([]);
-    sut.should.have.property('orderByDescending').which.is.a.Function;
+    should(orderByDescending).be.a.Function.with.property('name').which.equal('orderByDescending');
   });
 
   it('should return an iterable', () => {
-    const sut = nitter([]);
-    const result = sut.orderByDescending();
+    const sut = [];
+    const result = sut::orderByDescending();
 
     ensureIterable(result);
   });
 
   it('should return a seqence with the same length as the original', () => {
-    const sut = nitter([1, 2, 3]);
-    const result = sut.orderByDescending();
+    const sut = [1, 2, 3];
+    const result = sut::orderByDescending();
 
-    result.count().should.equal(sut.count());
+    result::count().should.equal(sut::count());
   });
 
   it('should return a ordered sequence', () => {
-    const sut = nitter([2, 3, 1, 1]);
-    const result = sut.orderByDescending().toArray();
+    const sut = [2, 3, 1, 1];
+    const result = sut::orderByDescending()::toArray();
 
     result.should.eql([3, 2, 1, 1]);
   });
 
+  it('should warn if you try to re-order a collection', () => {
+    const log = spy();
+    setLogSink(log);
+
+    try {
+      const sut = [2, 3, 1, 1]::orderBy();
+      log.callCount.should.equal(0);
+      sut::orderByDescending();
+      log.callCount.should.equal(1);
+      log.firstCall.args[0].should.equal('warn');
+      log.firstCall.args[1][0].should.equal('::orderByDescending ran on an already ordered iterator.');
+    } finally {
+      setLogSink(null);
+    }
+  });
+
   it('should sort on named properties', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2}
-    ]);
-    const result = sut.orderByDescending('id').toArray();
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 }
+    ];
+    const result = sut::orderByDescending('id')::toArray();
 
     result.should.eql([
-      {id: 3},
-      {id: 2},
-      {id: 1}
+      { id: 3 },
+      { id: 2 },
+      { id: 1 }
     ]);
   });
 
   it('should sort on function getters', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2}
-    ]);
-    const result = sut.orderByDescending(item => item.id).toArray();
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 }
+    ];
+    const result = sut::orderByDescending(item => item.id)::toArray();
 
     result.should.eql([
-      {id: 3},
-      {id: 2},
-      {id: 1}
+      { id: 3 },
+      { id: 2 },
+      { id: 1 }
     ]);
   });
 
   it('should accept custom matchers', () => {
-    const sut = nitter([
-      {id: 1},
-      {id: 3},
-      {id: 2},
-      {id: 1}
-    ]);
-    const result = sut.orderByDescending(item => item.id, (a, b) => {
-      if (a < b) return 1;
-      if (b < a) return -1;
+    const sut = [
+      { id: 1 },
+      { id: 3 },
+      { id: 2 },
+      { id: 1 }
+    ];
+    const result = sut::orderByDescending(item => item.id, (a, b) => {
+      if (a < b) {
+        return 1;
+      }
+
+      if (b < a) {
+        return -1;
+      }
+
       return 0;
-    }).toArray();
+    })::toArray();
 
     result.should.eql([
-      {id: 1},
-      {id: 1},
-      {id: 2},
-      {id: 3}
+      { id: 1 },
+      { id: 1 },
+      { id: 2 },
+      { id: 3 }
     ]);
   });
 });
 
 describe('::thenBy()', () => {
-  it('should be a function on ordered nitters', () => {
-    const sut1 = nitter([]);
-    const sut2 = sut1.orderBy();
-    const sut3 = sut1.orderByDescending();
+  it('should be a function', () => {
+    should(thenBy).be.a.Function.with.property('name').which.equal('thenBy');
+  });
 
-    sut1.should.not.have.property('thenBy');
-    sut2.should.have.property('thenBy').which.is.a.Function;
-    sut2.should.have.property('thenBy').which.is.a.Function;
+  it('should only be callable on ordered nitters', () => {
+    const sut1 = [];
+    const sut2 = sut1::orderBy();
+    const sut3 = sut1::orderByDescending();
+
+    (() => sut1::thenBy()).should.throw(`Function ::thenBy can only run on objects of type Nitter:OrderBy.`);
+    (() => sut2::thenBy()).should.not.throw();
+    (() => sut3::thenBy()).should.not.throw();
   });
 
   it('should return an iterable', () => {
-    const sut = nitter([]).orderBy();
-    const result = sut.thenBy();
+    const sut = []::orderBy();
+    const result = sut::thenBy();
 
     ensureIterable(result);
   });
 
   it('should return a seqence with the same length as the original', () => {
-    const sut = nitter([1, 2, 3]).orderBy();
-    const result = sut.thenBy();
+    const sut = [1, 2, 3]::orderBy();
+    const result = sut::thenBy();
 
-    result.count().should.equal(sut.count());
+    result::count().should.equal(sut::count());
   });
 
   it('should return a ordered sequence', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenBy('b').toArray();
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenBy('b')::toArray();
 
     result.should.eql([
-      {a: 1, b: 1},
-      {a: 1, b: 2},
-      {a: 2, b: 1},
-      {a: 2, b: 2}
+      { a: 1, b: 1 },
+      { a: 1, b: 2 },
+      { a: 2, b: 1 },
+      { a: 2, b: 2 }
     ]);
   });
 
   it('should sort on function getters', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenBy(item => item.b).toArray();
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenBy(item => item.b)::toArray();
 
     result.should.eql([
-      {a: 1, b: 1},
-      {a: 1, b: 2},
-      {a: 2, b: 1},
-      {a: 2, b: 2}
+      { a: 1, b: 1 },
+      { a: 1, b: 2 },
+      { a: 2, b: 1 },
+      { a: 2, b: 2 }
     ]);
   });
 
   it('should accept custom matchers', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenBy(item => item.b, (a, b) => {
-      if (a < b) return 1;
-      if (b < a) return -1;
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenBy(item => item.b, (a, b) => {
+      if (a < b) {
+        return 1;
+      }
+
+      if (b < a) {
+        return -1;
+      }
+
       return 0;
-    }).toArray();
+    })::toArray();
 
     result.should.eql([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
     ]);
   });
 });
 
 describe('::thenByDescending()', () => {
-  it('should be a function on ordered nitters', () => {
-    const sut1 = nitter([]);
-    const sut2 = sut1.orderBy();
-    const sut3 = sut1.orderByDescending();
+  it('should be a function', () => {
+    should(thenByDescending).be.a.Function.with.property('name').which.equal('thenByDescending');
+  });
 
-    sut1.should.not.have.property('thenByDescending');
-    sut2.should.have.property('thenByDescending').which.is.a.Function;
-    sut2.should.have.property('thenByDescending').which.is.a.Function;
+  it('should only be callable on ordered nitters', () => {
+    const sut1 = [];
+    const sut2 = sut1::orderBy();
+    const sut3 = sut1::orderByDescending();
+
+    (() => sut1::thenByDescending()).should.throw(`Function ::thenByDescending can only run on objects of type Nitter:OrderBy.`);
+    (() => sut2::thenByDescending()).should.not.throw();
+    (() => sut3::thenByDescending()).should.not.throw();
   });
 
   it('should return an iterable', () => {
-    const sut = nitter([]).orderBy();
-    const result = sut.thenByDescending();
+    const sut = []::orderBy();
+    const result = sut::thenByDescending();
 
     ensureIterable(result);
   });
 
   it('should return a seqence with the same length as the original', () => {
-    const sut = nitter([1, 2, 3]).orderBy();
-    const result = sut.thenByDescending();
+    const sut = [1, 2, 3]::orderBy();
+    const result = sut::thenByDescending();
 
-    result.count().should.equal(sut.count());
+    result::count().should.equal(sut::count());
   });
 
   it('should return a ordered sequence', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenByDescending('b').toArray();
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenByDescending('b')::toArray();
 
     result.should.eql([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
     ]);
   });
 
   it('should sort on function getters', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenByDescending(item => item.b).toArray();
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenByDescending(item => item.b)::toArray();
 
     result.should.eql([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
     ]);
   });
 
   it('should accept custom matchers', () => {
-    const sut = nitter([
-      {a: 1, b: 2},
-      {a: 1, b: 1},
-      {a: 2, b: 2},
-      {a: 2, b: 1}
-    ]).orderBy('a');
-    const result = sut.thenByDescending(item => item.b, (a, b) => {
-      if (a < b) return 1;
-      if (b < a) return -1;
+    const sut = [
+      { a: 1, b: 2 },
+      { a: 1, b: 1 },
+      { a: 2, b: 2 },
+      { a: 2, b: 1 }
+    ]::orderBy('a');
+    const result = sut::thenByDescending(item => item.b, (a, b) => {
+      if (a < b) {
+        return 1;
+      }
+
+      if (b < a) {
+        return -1;
+      }
+
       return 0;
-    }).toArray();
+    })::toArray();
 
     result.should.eql([
-      {a: 1, b: 1},
-      {a: 1, b: 2},
-      {a: 2, b: 1},
-      {a: 2, b: 2}
+      { a: 1, b: 1 },
+      { a: 1, b: 2 },
+      { a: 2, b: 1 },
+      { a: 2, b: 2 }
     ]);
   });
 });

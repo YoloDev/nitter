@@ -1,11 +1,11 @@
 import should from 'should';
-import { addMethods, nitter } from '../src/index';
+import { subtype, makeNitterFn } from '../src/index';
 
-addMethods({
-  __runInnerTest(fn) {
-    fn(this);
-  }
-});
+(() => {
+  // hack to make istanbul happy :-/
+  subtype('foo', () => {});
+  makeNitterFn(iterator)
+})();
 
 export function iterator(arr) {
   return {
@@ -18,9 +18,4 @@ export function ensureIterable(iterable) {
   const fn = iterable[Symbol.iterator];
   should.exist(fn);
   fn.should.be.a.Function;
-}
-
-export function ensureNitter(obj) {
-  const isNitter = nitter.isNitter(obj);
-  isNitter.should.be.true;
 }
