@@ -62,3 +62,5 @@ export const log = makeLogger('log');
 export const warn = makeLogger('warn');
 export const error = makeLogger('error');
 export const info = makeLogger('info');
+
+export const UNUSED = Object.freeze({});

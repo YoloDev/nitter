@@ -2,7 +2,7 @@ export { subtype, makeNitterFn } from './nitter';
 export { toArray } from './to-array';
 export { count } from './count';
 export { forEach } from './for-each';
-export { reduce, sum, reverse } from './reduce';
+export { reduce, reduceRight, sum, reverse } from './reduce';
 export { skip } from './skip';
 export { take } from './take';
 export { map } from './map';

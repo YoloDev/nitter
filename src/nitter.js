@@ -84,7 +84,7 @@ const wrapper = Object.create({}, {
   })
 });
 
-function wrap(iterable) {
+export function wrap(iterable) {
   return Object.create(wrapper, {
     _: prop(iterable)
   });
